@@ -12,12 +12,12 @@ const {
 
 const authRouter = new express.Router();
 // Add routes
-authRouter.get('/register', trimRequest.all, register);
-authRouter.get('/login', trimRequest.all, login);
-authRouter.get('/logout', trimRequest.all, logout);
-authRouter.get('/refresh-token', trimRequest.all, refreshToken);
-authRouter.get('/forgot-password', trimRequest.all, forgotPassword);
-authRouter.get('/confirm-otp', trimRequest.all, confirmOtp);
-authRouter.get('/reset-password', trimRequest.all, resetPassword);
+authRouter.post('/register', trimRequest.all, register);
+authRouter.post('/login', trimRequest.all, login);
+authRouter.post('/logout', trimRequest.all, logout);
+authRouter.post('/refresh-token', trimRequest.all, refreshToken);
+authRouter.post('/forgot-password', trimRequest.all, forgotPassword);
+authRouter.post('/confirm-otp', trimRequest.all, confirmOtp);
+authRouter.post('/reset-password', trimRequest.all, resetPassword);
 
 module.exports = authRouter;

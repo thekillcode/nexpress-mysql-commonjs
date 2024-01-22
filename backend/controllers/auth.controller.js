@@ -1,9 +1,9 @@
-import { StatusCodes } from '../errors/ApiError';
-import { createUser } from '../services/auth.service';
-import { generateToken } from '../services/token.service';
+const { StatusCodes } = require('../errors/ApiError');
+const { createUser } = require('../services/auth.service');
+const { generateToken } = require('../services/token.service');
 
 const validator = require('validator');
-export const register = async (req, res, next) => {
+const register = async (req, res, next) => {
   try {
     const { username, email, password, password_confirmation } = req.body;
     const newUser = await createUser({
@@ -34,39 +34,49 @@ export const register = async (req, res, next) => {
     next(error);
   }
 };
-export const login = async (req, res, next) => {
+const login = async (req, res, next) => {
   try {
   } catch (error) {
     next(error);
   }
 };
-export const logout = async (req, res, next) => {
+const logout = async (req, res, next) => {
   try {
   } catch (error) {
     next(error);
   }
 };
-export const refreshToken = async (req, res, next) => {
+const refreshToken = async (req, res, next) => {
   try {
   } catch (error) {
     next(error);
   }
 };
-export const forgotPassword = async (req, res, next) => {
+const forgotPassword = async (req, res, next) => {
   try {
   } catch (error) {
     next(error);
   }
 };
-export const confirmOtp = async (req, res, next) => {
+const confirmOtp = async (req, res, next) => {
   try {
   } catch (error) {
     next(error);
   }
 };
-export const resetPassword = async (req, res, next) => {
+const resetPassword = async (req, res, next) => {
   try {
   } catch (error) {
     next(error);
   }
+};
+
+module.exports = {
+  register,
+  login,
+  logout,
+  refreshToken,
+  forgotPassword,
+  confirmOtp,
+  resetPassword,
 };
