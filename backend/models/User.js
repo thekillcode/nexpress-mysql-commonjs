@@ -18,20 +18,34 @@ class User {
           'INSERT INTO users (username,email,password,role_id,status) value (?,?,?,?,?)',
           [username, email, hashedPassword, getRole[0].id, 1]
         );
-        resolve(newUser);
+        const [fetchedUser] = await db.query(
+          'select id,username,email,role_id,status from users where id=?',
+          [newUser.insertId]
+        );
+        resolve(fetchedUser[0]);
       } catch (error) {
         reject(error);
       }
     });
   }
-  static getSingle({ userame = '', email = '' }) {
+  static checkExistUser({ username = '', email = '' }) {
     return new Promise(async (resolve, reject) => {
       try {
-        const [getUser] = await db.query(
+        const [getUsers] = await db.query(
           `select id,username,email from users where username=? or email=?`,
-          [userame, email]
+          [username, email]
         );
-        resolve(getUser[0]);
+        resolve(getUsers);
+      } catch {
+        resolve([]);
+      }
+    });
+  }
+  static singleQuery(query = '', values = []) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const [queryResult] = await db.query(`${query}`, values);
+        resolve(queryResult[0]);
       } catch {
         resolve({});
       }

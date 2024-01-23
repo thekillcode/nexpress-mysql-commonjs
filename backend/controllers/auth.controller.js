@@ -1,8 +1,7 @@
 const { StatusCodes } = require('../errors/ApiError');
-const { createUser } = require('../services/auth.service');
+const { createUser, loginUser } = require('../services/auth.service');
 const { generateToken } = require('../services/token.service');
 
-const validator = require('validator');
 const register = async (req, res, next) => {
   try {
     const { username, email, password, password_confirmation } = req.body;
@@ -36,6 +35,9 @@ const register = async (req, res, next) => {
 };
 const login = async (req, res, next) => {
   try {
+    const { username, password } = req.body;
+    const loggedUser = await loginUser({ username, password });
+    return res.status(StatusCodes.OK).json({ user: loggedUser });
   } catch (error) {
     next(error);
   }

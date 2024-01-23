@@ -29,16 +29,53 @@ const createUser = async (userData) => {
     throw new ApiError(errors, StatusCodes.BAD_REQUEST);
   }
 
-  const dbUser = await User.getSingle({ userame: username, email: email });
-  if (dbUser) {
-    dbUser.username == username
-      ? (errors.username = 'user already exists')
-      : null;
-    dbUser.email == email ? (errors.email = 'email already exists') : null;
+  const dbusers = await User.checkExistUser({
+    username: username,
+    email: email,
+  });
+
+  if (dbusers.length > 0) {
+    dbusers.forEach((usr) => {
+      usr.username == username
+        ? (errors.username = 'user already exists')
+        : null;
+      usr.email == email ? (errors.email = 'email already exists') : null;
+    });
+
     if (Object.keys(errors).length > 0) {
       throw new ApiError(errors, StatusCodes.BAD_REQUEST);
     }
   }
+  const newUser = await User.create({
+    username,
+    email,
+    password,
+    role: 'user',
+  });
+  return newUser;
 };
+const loginUser = async (loginData) => {
+  const errors = {};
+  const { username, password } = loginData;
 
-module.exports = { createUser };
+  !username ? errors.username == 'username is  required' : null;
+  !password ? errors.password == 'password is  required' : null;
+
+  if (Object.keys(errors).length > 0)
+    throw new ApiError(errors, StatusCodes.BAD_REQUEST);
+
+  const queryParam = { username: username };
+  if (validator.isEmail(username)) {
+    queryParam.email = username;
+    delete queryParam['username'];
+  }
+  const getUser = await User.singleQuery(
+    `select username,email,role_id,status from users where ${
+      Object.keys(queryParam)[0]
+    }=?`,
+    [Object.values(queryParam)[0]]
+  );
+
+  return getUser;
+};
+module.exports = { createUser, loginUser };
