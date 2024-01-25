@@ -2,6 +2,7 @@ const { ApiError, StatusCodes } = require('../errors/ApiError');
 
 const validator = require('validator');
 const User = require('../models/User');
+const { comparePassword } = require('../utils/bcrypt.utils');
 
 const createUser = async (userData) => {
   const errors = {};
@@ -70,12 +71,18 @@ const loginUser = async (loginData) => {
     delete queryParam['username'];
   }
   const getUser = await User.singleQuery(
-    `select username,email,role_id,status from users where ${
+    `select users.id,users.username,users.password,users.email,roles.slug as role,case when users.status = 1 then 'Active' else 'Disabled' end as status from users inner join roles on users.role_id=roles.id where ${
       Object.keys(queryParam)[0]
     }=?`,
     [Object.values(queryParam)[0]]
   );
 
+  if (!getUser)
+    throw new ApiError('Invalid Credientials', StatusCodes.UNAUTHORIZED);
+  const passwordCheck = await comparePassword(password, getUser.password);
+  if (!passwordCheck)
+    throw new ApiError('Invalid Credientials', StatusCodes.UNAUTHORIZED);
+  delete getUser['password'];
   return getUser;
 };
 module.exports = { createUser, loginUser };

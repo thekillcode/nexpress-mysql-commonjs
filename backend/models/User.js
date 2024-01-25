@@ -1,5 +1,5 @@
 const db = require('../database/mysql-connention');
-const hashPassword = require('../utils/bcrypt.utils');
+const { hashPassword } = require('../utils/bcrypt.utils');
 class User {
   constructor({ username, email, password, role }) {
     this.username = username;
@@ -28,6 +28,7 @@ class User {
       }
     });
   }
+
   static checkExistUser({ username = '', email = '' }) {
     return new Promise(async (resolve, reject) => {
       try {
